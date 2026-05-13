@@ -29,6 +29,13 @@ storage/logs/*
 storage/debugbar
 storage/clockwork
 
+bootstrap/cache/*.php
+!bootstrap/cache/.gitignore
+
+resources/js/actions
+resources/js/routes
+resources/js/wayfinder
+
 database/database.sqlite
 database/*.sqlite-journal
 database/*.sqlite-wal
