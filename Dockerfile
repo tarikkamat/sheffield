@@ -13,27 +13,27 @@ RUN composer install \
 
 FROM node:22-alpine AS assets
 RUN apk add --no-cache \
-        php83 \
-        php83-cli \
-        php83-phar \
-        php83-openssl \
-        php83-mbstring \
-        php83-tokenizer \
-        php83-xml \
-        php83-xmlreader \
-        php83-xmlwriter \
-        php83-dom \
-        php83-simplexml \
-        php83-fileinfo \
-        php83-curl \
-        php83-session \
-        php83-ctype \
-        php83-iconv \
-        php83-pdo \
-        php83-pdo_sqlite \
-        php83-bcmath \
-        php83-intl \
-    && ln -sf /usr/bin/php83 /usr/local/bin/php
+        php84 \
+        php84-cli \
+        php84-phar \
+        php84-openssl \
+        php84-mbstring \
+        php84-tokenizer \
+        php84-xml \
+        php84-xmlreader \
+        php84-xmlwriter \
+        php84-dom \
+        php84-simplexml \
+        php84-fileinfo \
+        php84-curl \
+        php84-session \
+        php84-ctype \
+        php84-iconv \
+        php84-pdo \
+        php84-pdo_sqlite \
+        php84-bcmath \
+        php84-intl \
+    && ln -sf /usr/bin/php84 /usr/local/bin/php
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
