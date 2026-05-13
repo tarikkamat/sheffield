@@ -1,16 +1,5 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:22-alpine AS assets
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY resources ./resources
-COPY public ./public
-COPY vite.config.ts tsconfig.json ./
-COPY routes ./routes
-COPY app ./app
-RUN npm run build
-
 FROM composer:2 AS vendor
 WORKDIR /app
 COPY composer.json composer.lock ./
@@ -21,6 +10,36 @@ RUN composer install \
         --prefer-dist \
         --no-progress \
         --optimize-autoloader
+
+FROM node:22-alpine AS assets
+RUN apk add --no-cache \
+        php83 \
+        php83-cli \
+        php83-phar \
+        php83-openssl \
+        php83-mbstring \
+        php83-tokenizer \
+        php83-xml \
+        php83-xmlreader \
+        php83-xmlwriter \
+        php83-dom \
+        php83-simplexml \
+        php83-fileinfo \
+        php83-curl \
+        php83-session \
+        php83-ctype \
+        php83-iconv \
+        php83-pdo \
+        php83-pdo_sqlite \
+        php83-bcmath \
+        php83-intl \
+    && ln -sf /usr/bin/php83 /usr/local/bin/php
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY --from=vendor /app/vendor ./vendor
+COPY . .
+RUN npm run build
 
 FROM php:8.4-apache AS runtime
 
