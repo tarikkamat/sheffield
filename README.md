@@ -2,19 +2,23 @@
 
 A 4-team football league simulator built for the Insider One Champions League case study. Generates a double round-robin fixture list, simulates matches with weighted team attributes, maintains a live league table, and produces championship-probability predictions from week 4 onward.
 
+- **Live demo:** https://sheffield.fly.dev/
+- **Repository:** https://github.com/tarikkamat/sheffield
+
 ## Stack
 
-- **Backend:** Laravel 13, PHP 8.3+
+- **Backend:** Laravel 13, PHP 8.4+
 - **Frontend:** Inertia.js v3 + Vue 3 + Tailwind v4
 - **Routing types:** Laravel Wayfinder (auto-generated TypeScript route helpers)
 - **Testing:** Pest 4 (Pest 4 Browser available)
 - **Formatter:** Laravel Pint
 - **Linter / Type-check:** ESLint 9, `vue-tsc`
 - **Bundler:** Vite 8
+- **Hosting:** Fly.io (Apache + PHP 8.4, SQLite on a persistent volume)
 
 ## Prerequisites
 
-- PHP 8.3+
+- PHP 8.4+
 - Composer 2
 - Node 22+
 - SQLite (default) or any database supported by Laravel
@@ -225,4 +229,30 @@ npm run build                             # production assets
 
 ## Deploy
 
-This project is Laravel Cloud-ready and runs on any Laravel-compatible host. Required env vars are the standard `APP_KEY`, `DB_*`, `APP_URL`; for SQLite no extra config is needed beyond `DB_CONNECTION=sqlite`.
+The project ships with everything needed to run on [Fly.io](https://fly.io/):
+
+| File | Purpose |
+| --- | --- |
+| `Dockerfile` | Multi-stage build — Composer vendor, Node + PHP 8.4 asset build (Wayfinder + Vite), `php:8.4-apache` runtime |
+| `fly.toml` | App config — region, `/data` SQLite volume, `/up` health check, HTTPS, autostop |
+| `.fly/apache-laravel.conf` | Apache vhost — `public/` document root with `.htaccess` overrides |
+| `.fly/entrypoint.sh` | Boot script — ensures SQLite file, caches config/views, runs migrations |
+| `.fly/php.ini` | Production PHP tuning — OPcache + JIT |
+
+### First-time setup
+
+```bash
+fly apps create sheffield
+fly volumes create sheffield_data --region ams --size 1
+fly secrets set APP_KEY="$(php artisan key:generate --show)"
+fly deploy
+fly ssh console -C "php artisan db:seed --force"
+```
+
+Subsequent deploys are just `fly deploy`. Required runtime env vars (`APP_ENV`, `APP_URL`, `DB_CONNECTION`, `DB_DATABASE`, session/cache drivers) are declared inline in `fly.toml`; only `APP_KEY` is a secret.
+
+### Notes
+
+- **SQLite lives on a Fly volume** at `/data/database.sqlite` so data survives deploys and machine restarts. The volume is single-region; **do not scale beyond one machine** unless you migrate to Postgres.
+- `bootstrap/app.php` enables `trustProxies(at: '*')` so Laravel honours Fly's `X-Forwarded-Proto` and generates HTTPS asset URLs.
+- The app is also Laravel Cloud-ready; required env vars are the standard `APP_KEY`, `DB_*`, `APP_URL`.
