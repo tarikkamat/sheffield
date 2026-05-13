@@ -87,6 +87,8 @@ export default defineConfigWithVueTs(
             'resources/js/components/ui/*',
             'resources/js/routes/**',
             'resources/js/wayfinder/**',
+            '.claude/**',
+            '.claude-flow/**',
         ],
     },
     prettier, // Turn off all rules that might conflict with Prettier

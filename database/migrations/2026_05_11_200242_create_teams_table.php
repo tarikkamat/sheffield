@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('teams', function (Blueprint $table) {
@@ -16,13 +13,14 @@ return new class extends Migration
             $table->foreignId('tournament_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->unsignedTinyInteger('strength')->default(70);
+            $table->unsignedTinyInteger('attack_power')->default(70);
+            $table->unsignedTinyInteger('defense_power')->default(70);
+            $table->unsignedTinyInteger('goalkeeper_power')->default(70);
+            $table->unsignedTinyInteger('supporter_power')->default(70);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('teams');

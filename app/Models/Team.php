@@ -9,7 +9,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['tournament_id', 'name', 'strength'])]
+#[Fillable([
+    'tournament_id',
+    'name',
+    'strength',
+    'attack_power',
+    'defense_power',
+    'goalkeeper_power',
+    'supporter_power',
+])]
 class Team extends Model
 {
     /** @use HasFactory<TeamFactory> */
@@ -17,6 +25,10 @@ class Team extends Model
 
     protected $attributes = [
         'strength' => 70,
+        'attack_power' => 70,
+        'defense_power' => 70,
+        'goalkeeper_power' => 70,
+        'supporter_power' => 70,
     ];
 
     /**
@@ -26,6 +38,10 @@ class Team extends Model
     {
         return [
             'strength' => 'integer',
+            'attack_power' => 'integer',
+            'defense_power' => 'integer',
+            'goalkeeper_power' => 'integer',
+            'supporter_power' => 'integer',
         ];
     }
 

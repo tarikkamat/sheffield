@@ -21,19 +21,23 @@ function alignClass(align?: TableAlignment): string {
     if (align === 'right') {
         return 'text-right';
     }
+
     if (align === 'center') {
         return 'text-center';
     }
+
     return 'text-left';
 }
 
 function cellValue(row: Row, column: TableColumn<Row>): unknown {
     const field = column.field ?? column.key;
+
     return (row as Record<string, unknown>)[field];
 }
 
 function rowIdentifier(row: Row, key: string, fallback: number): string {
     const value = (row as Record<string, unknown>)[key];
+
     return value === undefined || value === null ? String(fallback) : String(value);
 }
 </script>

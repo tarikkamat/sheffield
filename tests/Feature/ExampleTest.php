@@ -1,7 +1,12 @@
 <?php
 
-test('returns a successful response', function () {
-    $response = $this->get(route('home'));
+use App\Models\Team;
+use App\Models\Tournament;
 
-    $response->assertOk();
+test('the root redirects to the first tournament', function () {
+    $this->withoutVite();
+    $tournament = Tournament::factory()->has(Team::factory()->count(4))->create();
+
+    $this->get('/')
+        ->assertRedirect(route('tournaments.show', $tournament));
 });
