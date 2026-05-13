@@ -39,6 +39,9 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY --from=vendor /app/vendor ./vendor
 COPY . .
+RUN cp .env.example .env \
+    && php artisan key:generate --no-interaction --force \
+    && php artisan wayfinder:generate --with-form
 RUN npm run build
 
 FROM php:8.4-apache AS runtime
